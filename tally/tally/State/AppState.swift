@@ -9,12 +9,14 @@ struct AppState: Codable {
     var status: AppStatus
     var children: [Child]
     var activeChildId: UUID?
+    var rewards: [Reward]
 }
 
 extension AppState {
     static let initial = AppState(
         status: .empty,
         children: [],
-        activeChildId: nil
+        activeChildId: nil,
+        rewards: []
     )
 }

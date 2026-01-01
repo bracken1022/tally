@@ -3,12 +3,10 @@ import SwiftUI
 struct AddChildView: View {
 
     @State private var name: String = ""
-    let onAdd: (Child) -> Void
+    let onContinue: (String) -> Void
 
     var body: some View {
         VStack(spacing: 24) {
-
-            // App 名（给用户看的）
             Text("积点")
                 .font(.title)
                 .fontWeight(.bold)
@@ -20,15 +18,9 @@ struct AddChildView: View {
                 .textFieldStyle(.roundedBorder)
 
             Button("继续") {
-                guard !name.trimmingCharacters(in: .whitespaces).isEmpty else {
-                    return
-                }
-
-                let child = Child(
-                    id: UUID(),
-                    name: name.trimmingCharacters(in: .whitespaces)
-                )
-                onAdd(child)
+                let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !trimmed.isEmpty else { return }
+                onContinue(trimmed)
             }
         }
         .padding(24)
