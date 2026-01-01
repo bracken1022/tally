@@ -14,20 +14,57 @@ struct DailyLimitView: View {
     }
 
     var body: some View {
-        VStack(spacing: 16) {
-            Toggle("开启每日上限", isOn: $enabled)
+        VStack(spacing: 32) {
+            // Gradient header
+            VStack(spacing: 8) {
+                Text("积点")
+                    .font(.system(size: 48, weight: .black))
+                    .foregroundStyle(TallyGradients.primary)
 
-            if enabled {
-                TextField("每日上限（如 10）", text: $limitText)
-                    .keyboardType(.numberPad)
-                    .textFieldStyle(.roundedBorder)
+                Text("每日上限设置")
+                    .font(.system(size: 24, weight: .semibold))
+                    .foregroundColor(.secondary)
             }
+            .padding(.top, 40)
+
+            // Toggle switch
+            Toggle("开启每日上限", isOn: $enabled)
+                .font(.system(size: 18, weight: .semibold))
+                .padding(20)
+                .background(Color.tallySurfaceLight)
+                .cornerRadius(12)
+                .tint(.tallySecondary)
+
+            // Conditional text field with animation
+            if enabled {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("上限积点数")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.secondary)
+
+                    TextField("如：10", text: $limitText)
+                        .keyboardType(.numberPad)
+                        .font(.system(size: 18))
+                        .padding(16)
+                        .background(Color.tallySurfaceLight)
+                        .cornerRadius(12)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.tallySecondary, lineWidth: 2)
+                        )
+                }
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
+
+            Spacer()
 
             Button("保存") {
                 let limit = enabled ? Int(limitText) : nil
                 onSave(enabled, limit)
             }
+            .buttonStyle(TallyPrimaryButtonStyle())
         }
-        .padding(24)
+        .padding(32)
+        .animation(.spring(), value: enabled)
     }
 }

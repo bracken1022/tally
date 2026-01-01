@@ -7,22 +7,43 @@ struct ChildSwitcherView: View {
     let onSelect: (UUID) -> Void
 
     var body: some View {
-        Menu {
-            ForEach(children) { child in
-                Button(child.name) {
-                    onSelect(child.id)
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12) {
+                ForEach(children) { child in
+                    Button(action: { onSelect(child.id) }) {
+                        VStack(spacing: 6) {
+                            Text(child.name)
+                                .font(.system(size: 16, weight: isActive(child) ? .bold : .semibold))
+
+                            Text("\(child.points)分")
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(isActive(child) ? .white.opacity(0.9) : .secondary)
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 12)
+                        .frame(minWidth: 100)
+                        .background(
+                            isActive(child)
+                                ? TallyGradients.primary
+                                : LinearGradient(colors: [Color.tallySurfaceLight], startPoint: .top, endPoint: .bottom)
+                        )
+                        .foregroundColor(isActive(child) ? .white : .primary)
+                        .cornerRadius(12)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(isActive(child) ? Color.clear : Color.gray.opacity(0.2), lineWidth: 1)
+                        )
+                        .scaleEffect(isActive(child) ? 1.05 : 1.0)
+                        .shadow(color: isActive(child) ? Color.tallyPrimary.opacity(0.3) : Color.clear, radius: 8)
+                    }
+                    .buttonStyle(.plain)
+                    .animation(.spring(response: 0.3), value: activeChildId)
                 }
-            }
-        } label: {
-            HStack {
-                Text(activeChildName)
-                    .font(.headline)
-                Image(systemName: "chevron.down")
             }
         }
     }
 
-    private var activeChildName: String {
-        children.first(where: { $0.id == activeChildId })?.name ?? "选择孩子"
+    private func isActive(_ child: Child) -> Bool {
+        child.id == activeChildId
     }
 }
