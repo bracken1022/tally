@@ -10,6 +10,8 @@ struct HomeView: View {
     let onSelectChild: (UUID) -> Void
     let onAddReward: () -> Void
     let onAddChild: () -> Void
+    let onAddPoints: (Int) -> Void
+    let onOpenDailyLimit: () -> Void
 
     var body: some View {
         VStack(spacing: 24) {
@@ -54,7 +56,24 @@ struct HomeView: View {
                 onAddChild()
             }
             .font(.subheadline)
+            
+            Button("每日上限") {
+                onOpenDailyLimit()
+            }
+            .font(.subheadline)
         }
         .padding(24)
+        
+        HStack(spacing: 16) {
+            Button("+1") { onAddPoints(1) }
+                .font(.title)
+
+            Button("+2") { onAddPoints(2) }
+                .font(.title2)
+
+            Button("+3") { onAddPoints(3) }
+                .font(.title2)
+        }
+
     }
 }

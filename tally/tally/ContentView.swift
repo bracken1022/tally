@@ -5,6 +5,7 @@ struct ContentView: View {
     @State private var state: AppState = LocalStore.load()
     @State private var showAddReward = false
     @State private var showAddChild = false
+    @State private var showDailyLimit = false
 
     var body: some View {
         Group {
@@ -17,7 +18,9 @@ struct ContentView: View {
                         status: .active,
                         children: [child],
                         activeChildId: id,
-                        rewards: []
+                        rewards: [],
+                        dailyLimitEnabled: false,
+                        dailyLimit: nil
                     )
                     LocalStore.save(state)
                 }
@@ -29,8 +32,21 @@ struct ContentView: View {
                     onAddPoint: addPoint,
                     onSelectChild: selectChild,
                     onAddReward: { showAddReward = true },
-                    onAddChild: { showAddChild = true }
+                    onAddChild: { showAddChild = true },
+                    onAddPoints: addPoints,
+                    onOpenDailyLimit: { showDailyLimit = true }
                 )
+                .sheet(isPresented: $showDailyLimit) {
+                    DailyLimitView(
+                        enabled: state.dailyLimitEnabled,
+                        limit: state.dailyLimit
+                    ) { enabled, limit in
+                        state.dailyLimitEnabled = enabled
+                        state.dailyLimit = limit
+                        LocalStore.save(state)
+                        showDailyLimit = false
+                    }
+                }
                 .sheet(isPresented: $showAddReward) {
                     AddRewardView { reward in
                         state.rewards.append(reward)
@@ -76,5 +92,24 @@ struct ContentView: View {
 
         LocalStore.save(state)
     }
+    
+    private func addPoints(_ value: Int) {
+        guard let id = state.activeChildId,
+              let index = state.children.firstIndex(where: { $0.id == id }) else {
+            return
+        }
+
+        // 每日上限（若开启）
+        if state.dailyLimitEnabled, let limit = state.dailyLimit {
+            let current = state.children[index].points
+            if current + value > limit {
+                return // 静默不加
+            }
+        }
+
+        state.children[index].points += value
+        LocalStore.save(state)
+    }
+
 
 }

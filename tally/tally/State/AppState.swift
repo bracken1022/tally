@@ -10,6 +10,8 @@ struct AppState: Codable {
     var children: [Child]
     var activeChildId: UUID?
     var rewards: [Reward]
+    var dailyLimitEnabled: Bool
+    var dailyLimit: Int?
 }
 
 extension AppState {
@@ -17,6 +19,8 @@ extension AppState {
         status: .empty,
         children: [],
         activeChildId: nil,
-        rewards: []
+        rewards: [],
+        dailyLimitEnabled: false,
+        dailyLimit: nil
     )
 }
