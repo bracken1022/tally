@@ -6,6 +6,7 @@ struct ContentView: View {
     @State private var showAddReward = false
     @State private var showAddChild = false
     @State private var showDailyLimit = false
+    @State private var showTallyWall = false
 
     var body: some View {
         Group {
@@ -34,8 +35,15 @@ struct ContentView: View {
                     onAddReward: { showAddReward = true },
                     onAddChild: { showAddChild = true },
                     onAddPoints: addPoints,
-                    onOpenDailyLimit: { showDailyLimit = true }
+                    onOpenDailyLimit: { showDailyLimit = true },
+                    onOpenTallyWall: { showTallyWall = true }
                 )
+                .sheet(isPresented: $showTallyWall) {
+                    TallyWallView(
+                        child: activeChild,
+                        rewards: state.rewards
+                    )
+                }
                 .sheet(isPresented: $showDailyLimit) {
                     DailyLimitView(
                         enabled: state.dailyLimitEnabled,

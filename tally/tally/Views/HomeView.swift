@@ -12,6 +12,7 @@ struct HomeView: View {
     let onAddChild: () -> Void
     let onAddPoints: (Int) -> Void
     let onOpenDailyLimit: () -> Void
+    let onOpenTallyWall: () -> Void
 
     var body: some View {
         VStack(spacing: 24) {
@@ -74,6 +75,11 @@ struct HomeView: View {
             Button("+3") { onAddPoints(3) }
                 .font(.title2)
         }
+        
+        Button("给孩子看") {
+            onOpenTallyWall()
+        }
+        .font(.subheadline)
 
     }
 }
