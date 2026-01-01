@@ -4,34 +4,44 @@ struct ContentView: View {
 
     @State private var state: AppState = LocalStore.load()
     @State private var showAddReward = false
+    @State private var showAddChild = false
 
     var body: some View {
         Group {
             if state.status == .empty {
-                AddChildView { childName in
-                    let newId = UUID()
-                    let child = Child(id: newId, name: childName, points: 0)
+                AddChildView { name in
+                    let id = UUID()
+                    let child = Child(id: id, name: name, points: 0)
 
                     state = AppState(
                         status: .active,
                         children: [child],
-                        activeChildId: newId,
+                        activeChildId: id,
                         rewards: []
                     )
                     LocalStore.save(state)
                 }
             } else if let activeChild = activeChild {
                 HomeView(
-                    child: activeChild,
+                    children: state.children,
+                    activeChild: activeChild,
                     rewards: state.rewards,
                     onAddPoint: addPoint,
-                    onAddReward: { showAddReward = true }
+                    onSelectChild: selectChild,
+                    onAddReward: { showAddReward = true },
+                    onAddChild: { showAddChild = true }
                 )
                 .sheet(isPresented: $showAddReward) {
                     AddRewardView { reward in
                         state.rewards.append(reward)
                         LocalStore.save(state)
                         showAddReward = false
+                    }
+                }
+                .sheet(isPresented: $showAddChild) {
+                    AddChildView { name in
+                        addNewChild(name)
+                        showAddChild = false
                     }
                 }
             }
@@ -48,8 +58,23 @@ struct ContentView: View {
               let index = state.children.firstIndex(where: { $0.id == id }) else {
             return
         }
-
         state.children[index].points += 1
         LocalStore.save(state)
     }
+
+    private func selectChild(_ id: UUID) {
+        state.activeChildId = id
+        LocalStore.save(state)
+    }
+    
+    private func addNewChild(_ name: String) {
+        let id = UUID()
+        let child = Child(id: id, name: name, points: 0)
+
+        state.children.append(child)
+        state.activeChildId = id
+
+        LocalStore.save(state)
+    }
+
 }

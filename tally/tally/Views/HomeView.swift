@@ -2,23 +2,27 @@ import SwiftUI
 
 struct HomeView: View {
 
-    let child: Child
+    let children: [Child]
+    let activeChild: Child
     let rewards: [Reward]
 
     let onAddPoint: () -> Void
+    let onSelectChild: (UUID) -> Void
     let onAddReward: () -> Void
+    let onAddChild: () -> Void
 
     var body: some View {
         VStack(spacing: 24) {
 
-            Text("积点")
-                .font(.headline)
+            // 顶部：孩子切换
+            ChildSwitcherView(
+                children: children,
+                activeChildId: activeChild.id,
+                onSelect: onSelectChild
+            )
 
-            Text(child.name)
-                .font(.title2)
-
-            // 当前分数（Day 2 只显示数字）
-            Text("\(child.points)")
+            // 当前分数
+            Text("\(activeChild.points)")
                 .font(.system(size: 48, weight: .bold))
 
             Button("+1") {
@@ -33,15 +37,23 @@ struct HomeView: View {
                     onAddReward()
                 }
             } else {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("奖励")
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("奖励进度")
                         .font(.headline)
 
                     ForEach(rewards) { reward in
-                        Text("\(reward.title) · \(reward.targetPoints) 分")
+                        RewardProgressView(
+                            reward: reward,
+                            currentPoints: activeChild.points
+                        )
                     }
                 }
             }
+            
+            Button("添加孩子") {
+                onAddChild()
+            }
+            .font(.subheadline)
         }
         .padding(24)
     }
