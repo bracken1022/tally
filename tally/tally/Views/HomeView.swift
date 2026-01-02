@@ -124,12 +124,6 @@ struct HomeView: View {
                         .foregroundColor(.tallyTextPrimary)
                         .font(.system(size: 16, weight: .semibold))
                         .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
-
-                        Button("给孩子看") {
-                            onOpenTallyWall()
-                        }
-                        .buttonStyle(TallyPrimaryButtonStyle())
-                        .frame(maxWidth: .infinity)
                     }
                     .frame(maxWidth: .infinity)
                 }

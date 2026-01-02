@@ -6,7 +6,8 @@ struct ContentView: View {
     @State private var showAddReward = false
     @State private var showAddChild = false
     @State private var showDailyLimit = false
-    @State private var showTallyWall = false
+    @State private var showParentMode = false
+    @State private var selectedChildIndex = 0
 
     var body: some View {
         Group {
@@ -25,47 +26,102 @@ struct ContentView: View {
                     )
                     LocalStore.save(state)
                 }
-            } else if let activeChild = activeChild {
-                HomeView(
-                    children: state.children,
-                    activeChild: activeChild,
-                    rewards: state.rewards,
-                    onAddPoint: addPoint,
-                    onSelectChild: selectChild,
-                    onAddReward: { showAddReward = true },
-                    onAddChild: { showAddChild = true },
-                    onAddPoints: addPoints,
-                    onOpenDailyLimit: { showDailyLimit = true },
-                    onOpenTallyWall: { showTallyWall = true }
-                )
-                .sheet(isPresented: $showTallyWall) {
-                    TallyWallView(
-                        child: activeChild,
-                        rewards: state.rewards
-                    )
+            } else {
+                // Main screen: TallyWall with tabs for each child
+                ZStack(alignment: .topTrailing) {
+                    TabView(selection: $selectedChildIndex) {
+                        ForEach(Array(state.children.enumerated()), id: \.element.id) { index, child in
+                            TallyWallView(
+                                child: child,
+                                rewards: state.rewards
+                            )
+                            .tag(index)
+                            .tabItem {
+                                Text(child.name)
+                            }
+                        }
+                    }
+                    .tabViewStyle(.page(indexDisplayMode: .always))
+                    .indexViewStyle(.page(backgroundDisplayMode: .always))
+
+                    // Parent mode button (floating top-right)
+                    Button(action: { showParentMode = true }) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "person.circle.fill")
+                            Text("家长")
+                        }
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 12)
+                        .background(
+                            LinearGradient(
+                                colors: [Color.tallyPrimary, Color.tallySecondary],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .cornerRadius(25)
+                        .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
+                    }
+                    .padding(.top, 60)
+                    .padding(.trailing, 20)
                 }
-                .sheet(isPresented: $showDailyLimit) {
-                    DailyLimitView(
-                        enabled: state.dailyLimitEnabled,
-                        limit: state.dailyLimit
-                    ) { enabled, limit in
-                        state.dailyLimitEnabled = enabled
-                        state.dailyLimit = limit
+                .onChange(of: selectedChildIndex) { oldValue, newValue in
+                    if newValue < state.children.count {
+                        state.activeChildId = state.children[newValue].id
                         LocalStore.save(state)
-                        showDailyLimit = false
                     }
                 }
-                .sheet(isPresented: $showAddReward) {
-                    AddRewardView { reward in
-                        state.rewards.append(reward)
-                        LocalStore.save(state)
-                        showAddReward = false
-                    }
-                }
-                .sheet(isPresented: $showAddChild) {
-                    AddChildView { name in
-                        addNewChild(name)
-                        showAddChild = false
+                .fullScreenCover(isPresented: $showParentMode) {
+                    if let currentActiveChild = activeChild {
+                        NavigationView {
+                            HomeView(
+                                children: state.children,
+                                activeChild: currentActiveChild,
+                                rewards: state.rewards,
+                                onAddPoint: addPoint,
+                                onSelectChild: selectChild,
+                                onAddReward: { showAddReward = true },
+                                onAddChild: { showAddChild = true },
+                                onAddPoints: addPoints,
+                                onOpenDailyLimit: { showDailyLimit = true },
+                                onOpenTallyWall: { showParentMode = false }
+                            )
+                            .navigationBarTitleDisplayMode(.inline)
+                            .toolbar {
+                                ToolbarItem(placement: .navigationBarLeading) {
+                                    Button("关闭") {
+                                        showParentMode = false
+                                    }
+                                    .foregroundColor(.tallySecondary)
+                                }
+                            }
+                        }
+                        .sheet(isPresented: $showDailyLimit) {
+                            DailyLimitView(
+                                enabled: state.dailyLimitEnabled,
+                                limit: state.dailyLimit
+                            ) { enabled, limit in
+                                state.dailyLimitEnabled = enabled
+                                state.dailyLimit = limit
+                                LocalStore.save(state)
+                                showDailyLimit = false
+                            }
+                        }
+                        .sheet(isPresented: $showAddReward) {
+                            AddRewardView { reward in
+                                state.rewards.append(reward)
+                                LocalStore.save(state)
+                                showAddReward = false
+                            }
+                        }
+                        .sheet(isPresented: $showAddChild) {
+                            AddChildView { name in
+                                addNewChild(name)
+                                showAddChild = false
+                            }
+                        }
                     }
                 }
             }
@@ -88,6 +144,12 @@ struct ContentView: View {
 
     private func selectChild(_ id: UUID) {
         state.activeChildId = id
+
+        // Update the tab index to match the selected child
+        if let index = state.children.firstIndex(where: { $0.id == id }) {
+            selectedChildIndex = index
+        }
+
         LocalStore.save(state)
     }
     
