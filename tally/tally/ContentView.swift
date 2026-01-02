@@ -14,13 +14,12 @@ struct ContentView: View {
             if state.status == .empty {
                 AddChildView { name in
                     let id = UUID()
-                    let child = Child(id: id, name: name, points: 0)
+                    let child = Child(id: id, name: name, points: 0, rewards: [])
 
                     state = AppState(
                         status: .active,
                         children: [child],
                         activeChildId: id,
-                        rewards: [],
                         dailyLimitEnabled: false,
                         dailyLimit: nil
                     )
@@ -32,7 +31,7 @@ struct ContentView: View {
                     ForEach(Array(state.children.enumerated()), id: \.element.id) { index, child in
                         TallyWallView(
                             child: child,
-                            rewards: state.rewards,
+                            rewards: child.rewards,
                             onOpenParentMode: { showParentMode = true }
                         )
                         .ignoresSafeArea(.all, edges: .all)
@@ -57,7 +56,7 @@ struct ContentView: View {
                             HomeView(
                                 children: state.children,
                                 activeChild: currentActiveChild,
-                                rewards: state.rewards,
+                                rewards: currentActiveChild.rewards,
                                 onAddPoint: addPoint,
                                 onSelectChild: selectChild,
                                 onAddReward: { showAddReward = true },
@@ -97,7 +96,11 @@ struct ContentView: View {
                         }
                         .sheet(isPresented: $showAddReward) {
                             AddRewardView { reward in
-                                state.rewards.append(reward)
+                                guard let id = state.activeChildId,
+                                      let index = state.children.firstIndex(where: { $0.id == id }) else {
+                                    return
+                                }
+                                state.children[index].rewards.append(reward)
                                 LocalStore.save(state)
                                 showAddReward = false
                             }
@@ -141,7 +144,7 @@ struct ContentView: View {
     
     private func addNewChild(_ name: String) {
         let id = UUID()
-        let child = Child(id: id, name: name, points: 0)
+        let child = Child(id: id, name: name, points: 0, rewards: [])
 
         state.children.append(child)
         state.activeChildId = id
