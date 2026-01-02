@@ -74,6 +74,14 @@ struct ContentView: View {
                                     }
                                     .foregroundColor(.tallySecondary)
                                 }
+
+                                ToolbarItem(placement: .navigationBarTrailing) {
+                                    Button(action: { showAddChild = true }) {
+                                        Image(systemName: "plus.circle.fill")
+                                            .font(.system(size: 24))
+                                            .foregroundColor(.tallySecondary)
+                                    }
+                                }
                             }
                         }
                         .sheet(isPresented: $showDailyLimit) {

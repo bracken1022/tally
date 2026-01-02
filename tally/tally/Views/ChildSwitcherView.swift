@@ -14,10 +14,6 @@ struct ChildSwitcherView: View {
                         VStack(spacing: 6) {
                             Text(child.name)
                                 .font(.system(size: 16, weight: isActive(child) ? .bold : .semibold))
-
-                            Text("\(child.points)分")
-                                .font(.system(size: 12, weight: .medium))
-                                .foregroundColor(isActive(child) ? .white.opacity(0.9) : .secondary)
                         }
                         .padding(.horizontal, 20)
                         .padding(.vertical, 12)

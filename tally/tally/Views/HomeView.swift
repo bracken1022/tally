@@ -103,16 +103,6 @@ struct HomeView: View {
 
                     // Section 4: Settings & Actions
                     VStack(spacing: 12) {
-                        Button("添加孩子") {
-                            onAddChild()
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(Color.tallySurfaceLight)
-                        .cornerRadius(12)
-                        .foregroundColor(.tallyTextPrimary)
-                        .font(.system(size: 16, weight: .semibold))
-                        .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
 
                         Button("每日上限") {
                             onOpenDailyLimit()

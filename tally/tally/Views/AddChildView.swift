@@ -14,13 +14,9 @@ struct AddChildView: View {
             VStack(spacing: 32) {
                 // Gradient header
                 VStack(spacing: 8) {
-                    Text("积点")
-                        .font(.system(size: 48, weight: .black))
-                        .foregroundStyle(TallyGradients.primary)
-
                     Text("添加孩子")
-                        .font(.system(size: 24, weight: .semibold))
-                        .foregroundColor(.secondary)
+                        .font(.system(size: 24, weight: .black))
+                        .foregroundStyle(TallyGradients.primary)
                 }
                 .padding(.top, 40)
                 .frame(maxWidth: .infinity)
