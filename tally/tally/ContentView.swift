@@ -28,45 +28,23 @@ struct ContentView: View {
                 }
             } else {
                 // Main screen: TallyWall with tabs for each child
-                ZStack(alignment: .topTrailing) {
-                    TabView(selection: $selectedChildIndex) {
-                        ForEach(Array(state.children.enumerated()), id: \.element.id) { index, child in
-                            TallyWallView(
-                                child: child,
-                                rewards: state.rewards
-                            )
-                            .tag(index)
-                            .tabItem {
-                                Text(child.name)
-                            }
-                        }
-                    }
-                    .tabViewStyle(.page(indexDisplayMode: .always))
-                    .indexViewStyle(.page(backgroundDisplayMode: .always))
-
-                    // Parent mode button (floating top-right)
-                    Button(action: { showParentMode = true }) {
-                        HStack(spacing: 8) {
-                            Image(systemName: "person.circle.fill")
-                            Text("家长")
-                        }
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 12)
-                        .background(
-                            LinearGradient(
-                                colors: [Color.tallyPrimary, Color.tallySecondary],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
+                TabView(selection: $selectedChildIndex) {
+                    ForEach(Array(state.children.enumerated()), id: \.element.id) { index, child in
+                        TallyWallView(
+                            child: child,
+                            rewards: state.rewards,
+                            onOpenParentMode: { showParentMode = true }
                         )
-                        .cornerRadius(25)
-                        .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
+                        .ignoresSafeArea(.all, edges: .all)
+                        .tag(index)
+                        .tabItem {
+                            Text(child.name)
+                        }
                     }
-                    .padding(.top, 60)
-                    .padding(.trailing, 20)
                 }
+                .tabViewStyle(.page(indexDisplayMode: .always))
+                .indexViewStyle(.page(backgroundDisplayMode: .always))
+                .ignoresSafeArea(.all, edges: .all)
                 .onChange(of: selectedChildIndex) { oldValue, newValue in
                     if newValue < state.children.count {
                         state.activeChildId = state.children[newValue].id
