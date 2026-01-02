@@ -15,102 +15,126 @@ struct HomeView: View {
     let onOpenTallyWall: () -> Void
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
+        ZStack {
+            // Dark mode background
+            Color.tallyBackground
+                .ignoresSafeArea()
 
-                // Section 1: Child Switcher & Points Display (Card)
-                VStack(spacing: 16) {
-                    ChildSwitcherView(
-                        children: children,
-                        activeChildId: activeChild.id,
-                        onSelect: onSelectChild
-                    )
+            ScrollView {
+                VStack(spacing: 20) {
 
-                    // Large points display with gradient
-                    Text("\(activeChild.points)")
-                        .font(.system(size: 64, weight: .black))
-                        .foregroundStyle(TallyGradients.primary)
-                        .padding(.vertical, 20)
-                }
-                .tallyCard()
+                    // Section 1: Child Switcher & Points Display (Card)
+                    VStack(spacing: 16) {
+                        ChildSwitcherView(
+                            children: children,
+                            activeChildId: activeChild.id,
+                            onSelect: onSelectChild
+                        )
 
-                // Section 2: Quick Actions (Card)
-                VStack(spacing: 16) {
-                    Text("快速加分")
-                        .font(.system(size: 18, weight: .bold))
-
-                    HStack(spacing: 16) {
-                        Button("+1") { onAddPoints(1) }
-                            .buttonStyle(TallyPointButtonStyle(color: .tallyPrimary))
-
-                        Button("+2") { onAddPoints(2) }
-                            .buttonStyle(TallyPointButtonStyle(color: .tallySecondary))
-
-                        Button("+3") { onAddPoints(3) }
-                            .buttonStyle(TallyPointButtonStyle(color: .tallyAccent))
+                        // Large points display with gradient
+                        Text("\(activeChild.points)")
+                            .font(.system(size: 64, weight: .black))
+                            .foregroundStyle(TallyGradients.primary)
+                            .padding(.vertical, 20)
                     }
-                }
-                .tallyCard()
+                    .frame(maxWidth: .infinity)
+                    .tallyCard()
 
-                // Section 3: Rewards (Card)
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack {
-                        Text("奖励进度")
-                            .font(.system(size: 20, weight: .bold))
-                        Spacer()
-                        if !rewards.isEmpty {
-                            Button(action: onAddReward) {
-                                Image(systemName: "plus.circle.fill")
-                                    .font(.system(size: 24))
-                                    .foregroundColor(.tallySecondary)
+                    // Section 2: Quick Actions (Card)
+                    VStack(spacing: 16) {
+                        Text("快速加分")
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(.tallyTextPrimary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                        HStack(spacing: 16) {
+                            Button("+1") { onAddPoints(1) }
+                                .buttonStyle(TallyPointButtonStyle(color: .tallyPrimary))
+                                .frame(maxWidth: .infinity)
+
+                            Button("+2") { onAddPoints(2) }
+                                .buttonStyle(TallyPointButtonStyle(color: .tallySecondary))
+                                .frame(maxWidth: .infinity)
+
+                            Button("+3") { onAddPoints(3) }
+                                .buttonStyle(TallyPointButtonStyle(color: .tallyAccent))
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .tallyCard()
+
+                    // Section 3: Rewards (Card)
+                    VStack(alignment: .leading, spacing: 16) {
+                        HStack {
+                            Text("奖励进度")
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(.tallyTextPrimary)
+                            Spacer()
+                            if !rewards.isEmpty {
+                                Button(action: onAddReward) {
+                                    Image(systemName: "plus.circle.fill")
+                                        .font(.system(size: 24))
+                                        .foregroundColor(.tallySecondary)
+                                }
+                            }
+                        }
+
+                        if rewards.isEmpty {
+                            Button("设置一个奖励") {
+                                onAddReward()
+                            }
+                            .buttonStyle(TallyPrimaryButtonStyle())
+                            .frame(maxWidth: .infinity)
+                        } else {
+                            VStack(spacing: 12) {
+                                ForEach(rewards) { reward in
+                                    RewardProgressView(
+                                        reward: reward,
+                                        currentPoints: activeChild.points
+                                    )
+                                    .frame(maxWidth: .infinity)
+                                }
                             }
                         }
                     }
+                    .frame(maxWidth: .infinity)
+                    .tallyCard()
 
-                    if rewards.isEmpty {
-                        Button("设置一个奖励") {
-                            onAddReward()
+                    // Section 4: Settings & Actions
+                    VStack(spacing: 12) {
+                        Button("添加孩子") {
+                            onAddChild()
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(Color.tallySurfaceLight)
+                        .cornerRadius(12)
+                        .foregroundColor(.tallyTextPrimary)
+                        .font(.system(size: 16, weight: .semibold))
+                        .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
+
+                        Button("每日上限") {
+                            onOpenDailyLimit()
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(Color.tallySurfaceLight)
+                        .cornerRadius(12)
+                        .foregroundColor(.tallyTextPrimary)
+                        .font(.system(size: 16, weight: .semibold))
+                        .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
+
+                        Button("给孩子看") {
+                            onOpenTallyWall()
                         }
                         .buttonStyle(TallyPrimaryButtonStyle())
                         .frame(maxWidth: .infinity)
-                    } else {
-                        ForEach(rewards) { reward in
-                            RewardProgressView(
-                                reward: reward,
-                                currentPoints: activeChild.points
-                            )
-                        }
-                    }
-                }
-                .tallyCard()
-
-                // Section 4: Settings & Actions
-                VStack(spacing: 12) {
-                    Button("添加孩子") {
-                        onAddChild()
                     }
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                    .background(Color.tallySurfaceLight)
-                    .cornerRadius(10)
-                    .foregroundColor(.primary)
-
-                    Button("每日上限") {
-                        onOpenDailyLimit()
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                    .background(Color.tallySurfaceLight)
-                    .cornerRadius(10)
-                    .foregroundColor(.primary)
-
-                    Button("给孩子看") {
-                        onOpenTallyWall()
-                    }
-                    .buttonStyle(TallyPrimaryButtonStyle())
                 }
+                .padding(20)
             }
-            .padding(24)
         }
     }
 }

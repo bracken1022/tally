@@ -29,6 +29,7 @@ struct RewardProgressView: View {
             HStack {
                 Text(reward.title)
                     .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.tallyTextPrimary)
                 Spacer()
                 Text("\(currentPoints)/\(reward.targetPoints)")
                     .font(.system(size: 14, weight: .medium))
@@ -39,7 +40,7 @@ struct RewardProgressView: View {
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.gray.opacity(0.15))
+                        .fill(Color.tallyInputBg)
                         .frame(height: 12)
 
                     RoundedRectangle(cornerRadius: 8)
@@ -50,9 +51,11 @@ struct RewardProgressView: View {
             }
             .frame(height: 12)
         }
+        .frame(maxWidth: .infinity)
         .padding(16)
-        .background(Color.tallySurfaceLight)
+        .background(Color.tallyCardBg)
         .cornerRadius(12)
+        .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
     }
 
     private var kidView: some View {

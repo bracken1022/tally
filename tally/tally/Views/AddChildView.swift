@@ -6,47 +6,57 @@ struct AddChildView: View {
     let onContinue: (String) -> Void
 
     var body: some View {
-        VStack(spacing: 32) {
-            // Gradient header
-            VStack(spacing: 8) {
-                Text("积点")
-                    .font(.system(size: 48, weight: .black))
-                    .foregroundStyle(TallyGradients.primary)
+        ZStack {
+            // Dark mode background
+            Color.tallyBackground
+                .ignoresSafeArea()
 
-                Text("添加孩子")
-                    .font(.system(size: 24, weight: .semibold))
-                    .foregroundColor(.secondary)
+            VStack(spacing: 32) {
+                // Gradient header
+                VStack(spacing: 8) {
+                    Text("积点")
+                        .font(.system(size: 48, weight: .black))
+                        .foregroundStyle(TallyGradients.primary)
+
+                    Text("添加孩子")
+                        .font(.system(size: 24, weight: .semibold))
+                        .foregroundColor(.secondary)
+                }
+                .padding(.top, 40)
+                .frame(maxWidth: .infinity)
+
+                // Styled text field
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("孩子的名字")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.tallyTextSecondary)
+
+                    TextField("", text: $name)
+                        .font(.system(size: 18))
+                        .padding(16)
+                        .background(Color.tallyInputBg)
+                        .foregroundColor(.tallyTextPrimary)
+                        .cornerRadius(12)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.tallySecondary, lineWidth: 2)
+                        )
+                }
+                .frame(maxWidth: .infinity)
+
+                Spacer()
+
+                Button("继续") {
+                    let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+                    guard !trimmed.isEmpty else { return }
+                    onContinue(trimmed)
+                }
+                .buttonStyle(TallyPrimaryButtonStyle())
+                .frame(maxWidth: .infinity)
+                .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .opacity(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.5 : 1.0)
             }
-            .padding(.top, 40)
-
-            // Styled text field
-            VStack(alignment: .leading, spacing: 8) {
-                Text("孩子的名字")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.secondary)
-
-                TextField("", text: $name)
-                    .font(.system(size: 18))
-                    .padding(16)
-                    .background(Color.tallySurfaceLight)
-                    .cornerRadius(12)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.tallySecondary, lineWidth: 2)
-                    )
-            }
-
-            Spacer()
-
-            Button("继续") {
-                let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-                guard !trimmed.isEmpty else { return }
-                onContinue(trimmed)
-            }
-            .buttonStyle(TallyPrimaryButtonStyle())
-            .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-            .opacity(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.5 : 1.0)
+            .padding(32)
         }
-        .padding(32)
     }
 }

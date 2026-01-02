@@ -1,19 +1,25 @@
 import SwiftUI
 
 extension Color {
-    // Primary Colors - Bold & Energetic
-    static let tallyPrimary = Color(red: 0.92, green: 0.29, blue: 0.38)      // Vibrant Pink
-    static let tallySecondary = Color(red: 0.29, green: 0.71, blue: 0.98)    // Bright Blue
-    static let tallyAccent = Color(red: 1.0, green: 0.73, blue: 0.0)         // Sunny Yellow
+    // Primary Colors - Bold & Energetic (brightened for dark mode)
+    static let tallyPrimary = Color(red: 1.0, green: 0.35, blue: 0.47)       // Vibrant Pink
+    static let tallySecondary = Color(red: 0.4, green: 0.78, blue: 1.0)      // Bright Blue
+    static let tallyAccent = Color(red: 1.0, green: 0.8, blue: 0.2)          // Sunny Yellow
 
     // Kid-Friendly Colors
-    static let tallyGreen = Color(red: 0.31, green: 0.89, blue: 0.55)        // Happy Green
-    static let tallyPurple = Color(red: 0.66, green: 0.43, blue: 0.98)       // Fun Purple
-    static let tallyOrange = Color(red: 1.0, green: 0.56, blue: 0.26)        // Playful Orange
+    static let tallyGreen = Color(red: 0.4, green: 0.95, blue: 0.65)         // Happy Green
+    static let tallyPurple = Color(red: 0.75, green: 0.52, blue: 1.0)        // Fun Purple
+    static let tallyOrange = Color(red: 1.0, green: 0.65, blue: 0.35)        // Playful Orange
 
-    // Backgrounds
-    static let tallySurfaceLight = Color(red: 0.98, green: 0.98, blue: 1.0)
-    static let tallyCardBg = Color.white
+    // Dark Mode Backgrounds
+    static let tallyBackground = Color(red: 0.08, green: 0.08, blue: 0.12)   // Deep Dark Blue
+    static let tallyCardBg = Color(red: 0.12, green: 0.12, blue: 0.18)       // Card Dark
+    static let tallyInputBg = Color(red: 0.15, green: 0.15, blue: 0.22)      // Input Dark
+    static let tallySurfaceLight = Color(red: 0.18, green: 0.18, blue: 0.25) // Surface Dark
+
+    // Text Colors
+    static let tallyTextPrimary = Color.white
+    static let tallyTextSecondary = Color(red: 0.7, green: 0.7, blue: 0.75)
 }
 
 struct TallyGradients {

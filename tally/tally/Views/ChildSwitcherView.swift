@@ -27,11 +27,11 @@ struct ChildSwitcherView: View {
                                 ? TallyGradients.primary
                                 : LinearGradient(colors: [Color.tallySurfaceLight], startPoint: .top, endPoint: .bottom)
                         )
-                        .foregroundColor(isActive(child) ? .white : .primary)
+                        .foregroundColor(isActive(child) ? .white : .tallyTextPrimary)
                         .cornerRadius(12)
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
-                                .stroke(isActive(child) ? Color.clear : Color.gray.opacity(0.2), lineWidth: 1)
+                                .stroke(isActive(child) ? Color.clear : Color.tallyTextSecondary.opacity(0.3), lineWidth: 1)
                         )
                         .scaleEffect(isActive(child) ? 1.05 : 1.0)
                         .shadow(color: isActive(child) ? Color.tallyPrimary.opacity(0.3) : Color.clear, radius: 8)
