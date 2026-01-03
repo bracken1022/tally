@@ -14,7 +14,13 @@ struct ContentView: View {
             if state.status == .empty {
                 AddChildView { name in
                     let id = UUID()
-                    let child = Child(id: id, name: name, points: 0, rewards: [])
+                    let child = Child(
+                        id: id,
+                        name: name,
+                        points: 0,
+                        rewards: [],
+                        pointReasons: Child.defaultPointReasons
+                    )
 
                     state = AppState(
                         status: .active,
@@ -57,6 +63,7 @@ struct ContentView: View {
                                 children: state.children,
                                 activeChild: currentActiveChild,
                                 rewards: currentActiveChild.rewards,
+                                pointReasons: currentActiveChild.pointReasons,
                                 onAddPoint: addPoint,
                                 onSelectChild: selectChild,
                                 onAddReward: { showAddReward = true },
@@ -144,7 +151,13 @@ struct ContentView: View {
     
     private func addNewChild(_ name: String) {
         let id = UUID()
-        let child = Child(id: id, name: name, points: 0, rewards: [])
+        let child = Child(
+            id: id,
+            name: name,
+            points: 0,
+            rewards: [],
+            pointReasons: Child.defaultPointReasons
+        )
 
         state.children.append(child)
         state.activeChildId = id

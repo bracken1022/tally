@@ -5,6 +5,7 @@ struct HomeView: View {
     let children: [Child]
     let activeChild: Child
     let rewards: [Reward]
+    let pointReasons: [PointReason]
 
     let onAddPoint: () -> Void
     let onSelectChild: (UUID) -> Void
@@ -40,25 +41,39 @@ struct HomeView: View {
                     .frame(maxWidth: .infinity)
                     .tallyCard()
 
-                    // Section 2: Quick Actions (Card)
+                    // Section 2: Point Reasons (Card)
                     VStack(spacing: 16) {
-                        Text("快速加分")
+                        Text("加分原因")
                             .font(.system(size: 18, weight: .bold))
                             .foregroundColor(.tallyTextPrimary)
                             .frame(maxWidth: .infinity, alignment: .leading)
 
-                        HStack(spacing: 16) {
-                            Button("+1") { onAddPoints(1) }
-                                .buttonStyle(TallyPointButtonStyle(color: .tallyPrimary))
-                                .frame(maxWidth: .infinity)
-
-                            Button("+2") { onAddPoints(2) }
-                                .buttonStyle(TallyPointButtonStyle(color: .tallySecondary))
-                                .frame(maxWidth: .infinity)
-
-                            Button("+3") { onAddPoints(3) }
-                                .buttonStyle(TallyPointButtonStyle(color: .tallyAccent))
-                                .frame(maxWidth: .infinity)
+                        VStack(spacing: 12) {
+                            ForEach(pointReasons) { reason in
+                                Button(action: { onAddPoints(reason.points) }) {
+                                    HStack {
+                                        Text(reason.title)
+                                            .font(.system(size: 16, weight: .semibold))
+                                        Spacer()
+                                        Text("+\(reason.points)")
+                                            .font(.system(size: 18, weight: .bold))
+                                    }
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 20)
+                                    .padding(.vertical, 16)
+                                    .frame(maxWidth: .infinity)
+                                    .background(
+                                        LinearGradient(
+                                            colors: [.tallyPrimary, .tallySecondary],
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        )
+                                    )
+                                    .cornerRadius(12)
+                                    .shadow(color: Color.tallyPrimary.opacity(0.3), radius: 6, x: 0, y: 3)
+                                }
+                                .buttonStyle(.plain)
+                            }
                         }
                     }
                     .frame(maxWidth: .infinity)
