@@ -48,33 +48,40 @@ struct HomeView: View {
                             .foregroundColor(.tallyTextPrimary)
                             .frame(maxWidth: .infinity, alignment: .leading)
 
-                        VStack(spacing: 12) {
-                            ForEach(pointReasons) { reason in
-                                Button(action: { onAddPoints(reason.points) }) {
-                                    HStack {
-                                        Text(reason.title)
-                                            .font(.system(size: 16, weight: .semibold))
-                                        Spacer()
-                                        Text("+\(reason.points)")
-                                            .font(.system(size: 18, weight: .bold))
-                                    }
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal, 20)
-                                    .padding(.vertical, 16)
-                                    .frame(maxWidth: .infinity)
-                                    .background(
-                                        LinearGradient(
-                                            colors: [.tallyPrimary, .tallySecondary],
-                                            startPoint: .leading,
-                                            endPoint: .trailing
+                        ScrollView(.vertical, showsIndicators: false) {
+                            VStack(spacing: 12) {
+                                ForEach(pointReasons) { reason in
+                                    Button(action: { onAddPoints(reason.points) }) {
+                                        HStack(spacing: 16) {
+                                            Text(reason.title)
+                                                .font(.system(size: 18, weight: .semibold))
+                                                .foregroundColor(.white)
+
+                                            Spacer()
+
+                                            Text("+\(reason.points)")
+                                                .font(.system(size: 24, weight: .heavy))
+                                                .foregroundColor(.white)
+                                        }
+                                        .padding(.horizontal, 24)
+                                        .padding(.vertical, 20)
+                                        .frame(maxWidth: .infinity)
+                                        .background(
+                                            LinearGradient(
+                                                colors: [.tallyPrimary, .tallySecondary],
+                                                startPoint: .leading,
+                                                endPoint: .trailing
+                                            )
                                         )
-                                    )
-                                    .cornerRadius(12)
-                                    .shadow(color: Color.tallyPrimary.opacity(0.3), radius: 6, x: 0, y: 3)
+                                        .cornerRadius(16)
+                                        .shadow(color: Color.tallyPrimary.opacity(0.4), radius: 6, x: 0, y: 3)
+                                    }
+                                    .buttonStyle(.plain)
                                 }
-                                .buttonStyle(.plain)
                             }
+                            .padding(.vertical, 8)
                         }
+                        .frame(height: 300)
                     }
                     .frame(maxWidth: .infinity)
                     .tallyCard()
