@@ -73,7 +73,8 @@ struct ContentView: View {
                                 onAddPoints: addPoints,
                                 onOpenTallyWall: { showParentMode = false },
                                 onAddPointReason: { showAddPointReason = true },
-                                onOpenDeletePointReasons: { showDeletePointReasons = true }
+                                onOpenDeletePointReasons: { showDeletePointReasons = true },
+                                onClearPoints: clearPoints
                             )
                             .navigationBarTitleDisplayMode(.inline)
                             .toolbar {
@@ -206,6 +207,16 @@ struct ContentView: View {
         }
 
         state.children[childIndex].pointReasons.remove(at: reasonIndex)
+        LocalStore.save(state)
+    }
+
+    private func clearPoints() {
+        guard let id = state.activeChildId,
+              let index = state.children.firstIndex(where: { $0.id == id }) else {
+            return
+        }
+
+        state.children[index].points = 0
         LocalStore.save(state)
     }
 

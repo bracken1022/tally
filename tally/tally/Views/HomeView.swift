@@ -15,6 +15,7 @@ struct HomeView: View {
     let onOpenTallyWall: () -> Void
     let onAddPointReason: () -> Void
     let onOpenDeletePointReasons: () -> Void
+    let onClearPoints: () -> Void
 
     var body: some View {
         ZStack {
@@ -129,7 +130,8 @@ struct HomeView: View {
                                 ForEach(rewards) { reward in
                                     RewardProgressView(
                                         reward: reward,
-                                        currentPoints: activeChild.points
+                                        currentPoints: activeChild.points,
+                                        onClearPoints: onClearPoints
                                     )
                                     .frame(maxWidth: .infinity)
                                 }
