@@ -71,7 +71,6 @@ struct ContentView: View {
                                 onAddReward: { showAddReward = true },
                                 onAddChild: { showAddChild = true },
                                 onAddPoints: addPoints,
-                                onOpenDailyLimit: { showDailyLimit = true },
                                 onOpenTallyWall: { showParentMode = false },
                                 onAddPointReason: { showAddPointReason = true },
                                 onOpenDeletePointReasons: { showDeletePointReasons = true }

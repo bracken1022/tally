@@ -12,7 +12,6 @@ struct HomeView: View {
     let onAddReward: () -> Void
     let onAddChild: () -> Void
     let onAddPoints: (Int) -> Void
-    let onOpenDailyLimit: () -> Void
     let onOpenTallyWall: () -> Void
     let onAddPointReason: () -> Void
     let onOpenDeletePointReasons: () -> Void
@@ -139,22 +138,6 @@ struct HomeView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .tallyCard()
-
-                    // Section 4: Settings & Actions
-                    VStack(spacing: 12) {
-
-                        Button("每日上限") {
-                            onOpenDailyLimit()
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(Color.tallySurfaceLight)
-                        .cornerRadius(12)
-                        .foregroundColor(.tallyTextPrimary)
-                        .font(.system(size: 16, weight: .semibold))
-                        .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
-                    }
-                    .frame(maxWidth: .infinity)
                 }
                 .padding(20)
             }
