@@ -31,7 +31,8 @@ struct HomeView: View {
                         ChildSwitcherView(
                             children: children,
                             activeChildId: activeChild.id,
-                            onSelect: onSelectChild
+                            onSelect: onSelectChild,
+                            onAddChild: onAddChild
                         )
 
                         // Large points display with gradient

@@ -5,6 +5,7 @@ struct ChildSwitcherView: View {
     let children: [Child]
     let activeChildId: UUID?
     let onSelect: (UUID) -> Void
+    let onAddChild: () -> Void
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -35,6 +36,16 @@ struct ChildSwitcherView: View {
                     .buttonStyle(.plain)
                     .animation(.spring(response: 0.3), value: activeChildId)
                 }
+
+                // Add child button
+                Button(action: onAddChild) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.system(size: 32))
+                        .foregroundColor(.tallySecondary)
+                        .frame(minWidth: 60)
+                        .padding(.vertical, 12)
+                }
+                .buttonStyle(.plain)
             }
         }
     }
