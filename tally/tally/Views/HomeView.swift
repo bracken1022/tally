@@ -15,7 +15,7 @@ struct HomeView: View {
     let onOpenDailyLimit: () -> Void
     let onOpenTallyWall: () -> Void
     let onAddPointReason: () -> Void
-    let onDeletePointReason: (IndexSet) -> Void
+    let onOpenDeletePointReasons: () -> Void
 
     var body: some View {
         ZStack {
@@ -50,10 +50,17 @@ struct HomeView: View {
                                 .font(.system(size: 18, weight: .bold))
                                 .foregroundColor(.tallyTextPrimary)
                             Spacer()
-                            Button(action: onAddPointReason) {
-                                Image(systemName: "plus.circle.fill")
-                                    .font(.system(size: 24))
-                                    .foregroundColor(.tallySecondary)
+                            HStack(spacing: 16) {
+                                Button(action: onOpenDeletePointReasons) {
+                                    Image(systemName: "minus.circle.fill")
+                                        .font(.system(size: 24))
+                                        .foregroundColor(.gray.opacity(0.5))
+                                }
+                                Button(action: onAddPointReason) {
+                                    Image(systemName: "plus.circle.fill")
+                                        .font(.system(size: 24))
+                                        .foregroundColor(.tallySecondary)
+                                }
                             }
                         }
 
@@ -87,7 +94,6 @@ struct HomeView: View {
                                     }
                                     .buttonStyle(.plain)
                                 }
-                                .onDelete(perform: onDeletePointReason)
                             }
                             .padding(.vertical, 8)
                         }

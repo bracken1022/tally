@@ -8,6 +8,7 @@ struct ContentView: View {
     @State private var showDailyLimit = false
     @State private var showParentMode = false
     @State private var showAddPointReason = false
+    @State private var showDeletePointReasons = false
     @State private var selectedChildIndex = 0
 
     var body: some View {
@@ -73,7 +74,7 @@ struct ContentView: View {
                                 onOpenDailyLimit: { showDailyLimit = true },
                                 onOpenTallyWall: { showParentMode = false },
                                 onAddPointReason: { showAddPointReason = true },
-                                onDeletePointReason: deletePointReason
+                                onOpenDeletePointReasons: { showDeletePointReasons = true }
                             )
                             .navigationBarTitleDisplayMode(.inline)
                             .toolbar {
@@ -130,6 +131,15 @@ struct ContentView: View {
                                 state.children[index].pointReasons.append(reason)
                                 LocalStore.save(state)
                                 showAddPointReason = false
+                            }
+                        }
+                        .sheet(isPresented: $showDeletePointReasons) {
+                            if let currentActiveChild = activeChild {
+                                DeletePointReasonsView(
+                                    pointReasons: currentActiveChild.pointReasons,
+                                    onDelete: deletePointReason,
+                                    onClose: { showDeletePointReasons = false }
+                                )
                             }
                         }
                     }
@@ -197,13 +207,14 @@ struct ContentView: View {
         LocalStore.save(state)
     }
 
-    private func deletePointReason(_ indexSet: IndexSet) {
+    private func deletePointReason(_ reason: PointReason) {
         guard let id = state.activeChildId,
-              let index = state.children.firstIndex(where: { $0.id == id }) else {
+              let childIndex = state.children.firstIndex(where: { $0.id == id }),
+              let reasonIndex = state.children[childIndex].pointReasons.firstIndex(where: { $0.id == reason.id }) else {
             return
         }
 
-        state.children[index].pointReasons.remove(atOffsets: indexSet)
+        state.children[childIndex].pointReasons.remove(at: reasonIndex)
         LocalStore.save(state)
     }
 
