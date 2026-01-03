@@ -7,6 +7,7 @@ struct ContentView: View {
     @State private var showAddChild = false
     @State private var showDailyLimit = false
     @State private var showParentMode = false
+    @State private var showAddPointReason = false
     @State private var selectedChildIndex = 0
 
     var body: some View {
@@ -70,7 +71,9 @@ struct ContentView: View {
                                 onAddChild: { showAddChild = true },
                                 onAddPoints: addPoints,
                                 onOpenDailyLimit: { showDailyLimit = true },
-                                onOpenTallyWall: { showParentMode = false }
+                                onOpenTallyWall: { showParentMode = false },
+                                onAddPointReason: { showAddPointReason = true },
+                                onDeletePointReason: deletePointReason
                             )
                             .navigationBarTitleDisplayMode(.inline)
                             .toolbar {
@@ -116,6 +119,17 @@ struct ContentView: View {
                             AddChildView { name in
                                 addNewChild(name)
                                 showAddChild = false
+                            }
+                        }
+                        .sheet(isPresented: $showAddPointReason) {
+                            AddPointReasonView { reason in
+                                guard let id = state.activeChildId,
+                                      let index = state.children.firstIndex(where: { $0.id == id }) else {
+                                    return
+                                }
+                                state.children[index].pointReasons.append(reason)
+                                LocalStore.save(state)
+                                showAddPointReason = false
                             }
                         }
                     }
@@ -180,6 +194,16 @@ struct ContentView: View {
         }
 
         state.children[index].points += value
+        LocalStore.save(state)
+    }
+
+    private func deletePointReason(_ indexSet: IndexSet) {
+        guard let id = state.activeChildId,
+              let index = state.children.firstIndex(where: { $0.id == id }) else {
+            return
+        }
+
+        state.children[index].pointReasons.remove(atOffsets: indexSet)
         LocalStore.save(state)
     }
 

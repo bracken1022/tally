@@ -14,6 +14,8 @@ struct HomeView: View {
     let onAddPoints: (Int) -> Void
     let onOpenDailyLimit: () -> Void
     let onOpenTallyWall: () -> Void
+    let onAddPointReason: () -> Void
+    let onDeletePointReason: (IndexSet) -> Void
 
     var body: some View {
         ZStack {
@@ -43,10 +45,17 @@ struct HomeView: View {
 
                     // Section 2: Point Reasons (Card)
                     VStack(spacing: 16) {
-                        Text("加分原因")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.tallyTextPrimary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                        HStack {
+                            Text("加分原因")
+                                .font(.system(size: 18, weight: .bold))
+                                .foregroundColor(.tallyTextPrimary)
+                            Spacer()
+                            Button(action: onAddPointReason) {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.system(size: 24))
+                                    .foregroundColor(.tallySecondary)
+                            }
+                        }
 
                         ScrollView(.vertical, showsIndicators: false) {
                             VStack(spacing: 12) {
@@ -78,6 +87,7 @@ struct HomeView: View {
                                     }
                                     .buttonStyle(.plain)
                                 }
+                                .onDelete(perform: onDeletePointReason)
                             }
                             .padding(.vertical, 8)
                         }
